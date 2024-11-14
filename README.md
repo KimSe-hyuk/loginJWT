@@ -1,5 +1,8 @@
-# loginJWT
-토큰방식의 장점 세션방시과 다르게 서버와 
+# loginJWT,구글 로그인
+토큰방식의 장점
+1.서버가 상태를 저장하지 않음 - 세션 데이터를 저장하거나 조회할 필요 없음
+2. 토큰에 사용자 정보 포함 :토큰을 검증하기만 하면 됨
+3. 보안 : 토큰 유효성 검증: 변조토큰확인가으능, 만료 시간
 
 로그인시에 
 엑세스 토큰은 localstolage에 담고
@@ -13,17 +16,7 @@ tokenAuthenticationFilter로
 토큰이 있고 기한이 끝나면 
 리프레쉬토큰이 끝나지 않았다면 엑세스 토큰과 리프레쉬 토큰을 재발급 받는다.
 
-토큰이 이상하면 
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return (request, response, authException) -> {
-            response.sendRedirect("/access-denied");
-        };
-    }
-로 /access-denied 로 이동 시킨다. 
-
-프론트에서 처리 
-
+토큰이 인증이 안되면 로그인으로 다른페이지는 /access-denied 로 이동 시킨다. 
 
 구글 로그인시에는 받아와서 email 엑세스 토큰과 리프레쉬 토큰을 만든다. 
 리프레쉬시에는 Eamil정보가 있으면 email엑세스 토큰과 리프레쉬 토큰을 만든다.
