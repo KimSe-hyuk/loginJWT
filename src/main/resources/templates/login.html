@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/signIn.js}"></script>
+    <link th:href="@{/css/signIn.css}" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+<div class="login-container">
+    <h2>로그인</h2>
+    <form id="login-form"   method="POST" class="login-form">
+        <div class="input-group">
+            <label for="username">사용자 이름</label>
+            <input type="text" id="username" name="username" placeholder="사용자 이름을 입력하세요" required>
+        </div>
+        <div class="input-group">
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+        </div>
+        <input id="signin" type="submit" class="login-btn" value="로그인">
+        <div class="additional-links">
+            아직 회원이 아니신가요? <a th:href="@{/member/join}">회원가입</a>
+        </div>
+        <a href="/oauth2/authorization/google" target="_self">Google 로그인</a>
+    </form>
+</div>
+</body>
+</html>

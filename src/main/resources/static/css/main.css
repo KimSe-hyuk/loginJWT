@@ -1,0 +1,212 @@
+/* 기본적인 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* 헤더 스타일 */
+.header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.header .container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav ul li {
+    display: inline-block;
+}
+
+.nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* 본문 영역 스타일 */
+.main-content {
+    background-color: white;
+    padding: 40px 0;
+}
+
+.main-content .container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.intro {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.intro h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.features {
+    display: flex;
+    justify-content: space-between;
+}
+
+.feature-item {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 5px;
+    width: 30%;
+    text-align: center;
+}
+
+.feature-item h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.feature-item p {
+    font-size: 1rem;
+    color: #333;
+}
+
+/* 푸터 스타일 */
+.footer {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.footer .container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .features {
+        flex-direction: column;
+    }
+
+    .feature-item {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+}
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 1000px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+#board {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+#pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 0 10px;
+}
+
+.btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.btn:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+#pageInfo {
+    font-size: 1.2em;
+    margin: 0 10px;
+}
