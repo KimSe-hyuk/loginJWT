@@ -5,8 +5,8 @@
 3. 보안 : 토큰 유효성 검증: 변조토큰확인가으능, 만료 시간
 
 ![메인](https://github.com/user-attachments/assets/a87a024d-c388-4b56-9192-346e75d44d8f)
-
-로그인시에 
+ ![User Login (1)](https://github.com/user-attachments/assets/8fee510a-bd6e-47aa-a45d-44bab7bafca6)
+로그인시에
 엑세스 토큰은 localstolage에 담고
 리프레쉬 토큰은 쿠키에 담는다.
 
