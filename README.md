@@ -8,6 +8,7 @@
  ![User Login (1)](https://github.com/user-attachments/assets/8fee510a-bd6e-47aa-a45d-44bab7bafca6)
 
 접속시에
+
  public int validateToken(String token) {
         // 1
 
