@@ -51,56 +51,6 @@
 ## 4. 권한 처리
 
 - 사용자가 **권한이 없는 페이지**에 접근하면, `/access-denied` 페이지로 리다이렉트됩니다.
-- `/access-denied` 페이지에서는 권한 부족 메시지 또는 안내 메시지를 보여줍니다.
-
-# 인증 시스템 흐름 (OAuth2 로그인 포함)
-
-### 구글 로그인 시에 핵심 사항
-- 구글 콘솔 리다이렉트에 http://localhost:8080/login/oauth2/code/google 추가  
--- **OAuth2 인증을 위한 설정**을 `application.yml` 파일에 추가하는 방법
-- 각 설정 항목에 대한 간단한 설명과 사용 방법
-```yaml
- security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 클라이언트 ID
-            client-secret: 클라이언트 보안 비밀번호
-            scope: profile, email
-            authorization-grant-type: authorization_code
-            client-name: Google
-        provider:
-          google:
-            authorization-uri: https://accounts.google.com/o/oauth2/auth
-            token-uri: https://oauth2.googleapis.com/token
-            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-            user-name-attribute: id
-```
-## 1. 로그인 시 (OAuth2 로그인)
-
-OAuth2 로그인을 통해 사용자가 Google과 같은 외부 인증 제공자(Google)를 이용해 로그인할 수 있도록 설정합니다.
-
-```java
-.oauth2Login(oauth2 -> oauth2
-    // OAuth2 인증을 시작할 로그인 페이지 URL을 설정합니다.
-    .loginPage("/member/login")
-    
-    // Google 로그인 후 구글 유저 데이터를 받아올 userService 설정합니다.
-    .userInfoEndpoint(u -> u
-        .userService(principalOauth2UserService)
-    )
-    
-    // 로그인 성공 시 실행될 핸들러를 설정하여, email 토큰을 생성하거나 리디렉션을 처리합니다.
-    .successHandler(authenticationSuccessHandler)
-);
-```
- ###   설명:
-- **이메일 정보**를 사용하여 엑세스 토큰과 리프레쉬 토큰을 생성하는 과정
-- **권한 기반 UI 제어**: `ROLE_USER`와 `ROLE_ADMIN` 권한에 따라 다른 콘텐츠를 보여주는 예시
-- OAuth2 로그인 후 이메일 정보를 기반으로 토큰 발급 처리
-
-
 
 ## 5. 전체 흐름
 
@@ -128,6 +78,84 @@ OAuth2 로그인을 통해 사용자가 Google과 같은 외부 인증 제공자
 - ROLE ADMIN일시에 
 
 <img width="704" alt="image" src="https://github.com/user-attachments/assets/18f73320-78dd-425e-89fa-05b3d0bc35cd">
+
+
+# 인증 시스템 흐름 (OAuth2 로그인 포함)
+
+OAuth2 로그인을 통해 사용자가 Google과 같은 외부 인증 제공자(Google)를 이용해 로그인할 수 있도록 설정합니다.
+
+# OAuth2 로그인 흐름
+
+1. **사용자가 Google 로그인 페이지에서 로그인**  
+   - 사용자가 애플리케이션에서 Google 로그인 버튼을 클릭하면, Google 로그인 페이지로 리디렉션됩니다.
+
+2. **Google에서 인증 후 리디렉션**  
+   - 사용자가 Google에서 인증을 완료하면, Google은 **인가 코드**를 애플리케이션으로 리디렉션합니다. 
+   - 이때 **인가 코드**는 사용자가 인증을 허가했다는 신호로, Google은 해당 코드를 애플리케이션에게 전달합니다.
+
+3. **OAuth2에서 구글 인가 코드를 받아 엑세스 토큰을 자동으로 요청**  
+   - 애플리케이션은 Spring Security의 `oauth2Login` 설정에 의해 자동으로 **엑세스 토큰**을 요청합니다.
+   - 구글은 애플리케이션에게 **엑세스 토큰**을 반환합니다.
+
+4. **`principalOauth2UserService`에서 엑세스 토큰을 사용하여 Google 사용자 데이터 가져오기**  
+   - 받은 엑세스 토큰을 이용해 애플리케이션은 Google의 **사용자 정보 API** (`https://www.googleapis.com/oauth2/v3/userinfo`)를 호출하여 사용자의 정보를 가져옵니다. 
+   - 이 사용자 정보를 기반으로 `OAuth2User` 객체를 생성합니다.
+
+5. **`OAuth2User` 객체를 기반으로 엑세스 토큰과 리프레시 토큰 생성**  
+   - `OAuth2User` 객체에 포함된 사용자 정보를 사용하여 서버에서 **엑세스 토큰**과 **리프레시 토큰**을 생성합니다. 
+   - **엑세스 토큰**은 로컬 스토리지에, **리프레시 토큰**은 쿠키에 저장됩니다.
+
+6. **엑세스 토큰을 클라이언트로 전달**  
+   - 서버는 생성된 **엑세스 토큰**을 HTTP 응답 헤더에 추가하여 클라이언트에 전달합니다. 
+   - 클라이언트는 이 엑세스 토큰을 **로컬 스토리지**에 저장하고, 이후 **인증된 요청**을 할 때 사용합니다.
+
+### 코드 예시
+
+```java
+.oauth2Login(oauth2 -> oauth2
+    // OAuth2 인증을 시작할 로그인 페이지 URL을 설정합니다.
+    .loginPage("/member/login")
+    
+    // Google 로그인 후, 엑세스 토큰을 이용해 구글 유저 데이터를 받아옵니다.
+    .userInfoEndpoint(u -> u
+        .userService(principalOauth2UserService) // 사용자 데이터를 처리할 Service 설정
+    )
+    
+    // 로그인 성공 시 실행될 핸들러를 설정합니다.
+    // OAuth2 인증 성공 후, principalOauth2UserService에서 받은 OAuth2User를 사용하여
+    // email, 엑세스 토큰 등을 처리합니다.
+    .successHandler(authenticationSuccessHandler)
+);
+```
+
+### 구글 로그인 시에 핵심 사항
+- 구글 콘솔 리다이렉트에 http://localhost:8080/login/oauth2/code/google 추가  
+-- **OAuth2 인증을 위한 설정**을 `application.yml` 파일에 추가하는 방법
+- 각 설정 항목에 대한 간단한 설명과 사용 방법
+```yaml
+ security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 클라이언트 ID
+            client-secret: 클라이언트 보안 비밀번호
+            scope: profile, email
+            authorization-grant-type: authorization_code
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: id
+```
+
+###  설명:
+- **이메일 정보**를 사용하여 엑세스 토큰과 리프레쉬 토큰을 생성하는 과정
+- OAuth2 로그인 후 이메일 정보를 기반으로 토큰 발급 처리
+
+
 
 
 
