@@ -1,24 +1,9 @@
 # loginJWT, 구글 로그인
 
-## 시작 가이드 (Getting Started)
 
-이 가이드는 프로젝트를 로컬 환경에서 설정하고 실행하는 방법을 안내합니다.
-
-## 1. 프로젝트 클론
-
-먼저, GitHub에서 프로젝트를 클론합니다. 터미널을 열고 아래 명령어를 실행하세요:
-
-```bash
-git clone https://github.com/KimSe-hyuk/loginJWT.git
-cd loginJWT
-```
-## 2. sql 테이블 생성
-java_basic db를 만들고 아래 링크와 같은 테이블 생성
-
-https://github.com/KimSe-hyuk/loginJWT/blob/main/src/main/resources/sql.sql
 
 ## 목차
-
+0. [시작 가이드](#시작-가이드-getting-started)
 1. [주요 기능](#주요-기능)
    - JWT 인증
    - 역할 기반 접근 제어
@@ -46,7 +31,22 @@ https://github.com/KimSe-hyuk/loginJWT/blob/main/src/main/resources/sql.sql
    - `application.yml` 설정 예시
 
 ---
+## 시작 가이드 (Getting Started)
 
+이 가이드는 프로젝트를 로컬 환경에서 설정하고 실행하는 방법을 안내합니다.
+
+## 1. 프로젝트 클론
+
+먼저, GitHub에서 프로젝트를 클론합니다. 터미널을 열고 아래 명령어를 실행하세요:
+
+```bash
+git clone https://github.com/KimSe-hyuk/loginJWT.git
+cd loginJWT
+```
+## 2. sql 테이블 생성
+java_basic db를 만들고 아래 링크와 같은 테이블 생성
+
+https://github.com/KimSe-hyuk/loginJWT/blob/main/src/main/resources/sql.sql
 ## 주요 기능
 - **JWT 인증**: 구글 로그인을 통해 인증 후, JWT를 사용하여 인증을 처리합니다.
 - **역할 기반 접근 제어**: 관리자(ROLE_ADMIN)와 일반 사용자(ROLE_USER)의 접근 권한을 구분하여 제어합니다.
