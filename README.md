@@ -1,6 +1,6 @@
-# loginJWT,구글 로그인
+# loginJWT, 구글 로그인
 
- # 목차
+## 목차
 
 1. [주요 기능](#주요-기능)
    - JWT 인증
@@ -9,7 +9,7 @@
 2. [토큰방식의 장점](#토큰방식의-장점)
 3. [OAuth2 로그인](#oauth2-로그인)
 4. [플로우 차트](#플로우-차트)
-5. [기술 스택](#스택)
+5. [기술 스택](#기술-스택)
 6. [인증 시스템 흐름](#인증-시스템-흐름)
    - 로그인 시
    - 인증 흐름
@@ -27,61 +27,63 @@
 9. [구글 로그인 시 핵심 사항](#구글-로그인-시에-핵심-사항)
    - 구글 콘솔 리다이렉트 설정
    - `application.yml` 설정 예시
- 
+
+---
+
 ## 주요 기능
 - **JWT 인증**: 구글 로그인을 통해 인증 후, JWT를 사용하여 인증을 처리합니다.
 - **역할 기반 접근 제어**: 관리자(ROLE_ADMIN)와 일반 사용자(ROLE_USER)의 접근 권한을 구분하여 제어합니다.
 - **엑세스 토큰과 리프레쉬 토큰 관리**: 클라이언트에서 JWT 토큰을 로컬 스토리지와 쿠키에 저장하여 인증을 처리합니다.
 
 ## 토큰방식의 장점
-1. **서버가 상태를 저장하지 않음** - 세션 데이터를 저장하거나 조회할 필요 없음
-2. **토큰에 사용자 정보 포함** :토큰을 검증하기만 하면 됨
-3. **보안** : 토큰 유효성 검증: 변조토큰 확인가능, 만료 시간
+1. **서버가 상태를 저장하지 않음**: 세션 데이터를 저장하거나 조회할 필요가 없습니다.
+2. **토큰에 사용자 정보 포함**: 토큰을 검증하기만 하면 사용자 정보를 확인할 수 있습니다.
+3. **보안**: 토큰 유효성 검증, 변조된 토큰을 확인 가능하며, 만료 시간이 설정됩니다.
 
 ## OAuth2 로그인
 - 외부 인증 제공자(예: Google)를 사용하여 로그인하는 방식입니다.
 - 구글 로그인 시 사용자의 이메일 정보 등을 통해 JWT 토큰을 발급하고, 역할에 따라 접근 권한을 설정합니다.
- 
+
 ## 플로우 차트
 ![메인](https://github.com/user-attachments/assets/a87a024d-c388-4b56-9192-346e75d44d8f)
- ![User Login (1)](https://github.com/user-attachments/assets/8fee510a-bd6e-47aa-a45d-44bab7bafca6)
- 
+![User Login (1)](https://github.com/user-attachments/assets/8fee510a-bd6e-47aa-a45d-44bab7bafca6)
 
-## 스택
-<img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white" alt="Spring"> <img src="https://img.shields.io/badge/Spring_Security-00796B?style=for-the-badge&logo=springsecurity&logoColor=white" alt="Spring Security"> <img src="https://img.shields.io/badge/JWT-FFD700?style=for-the-badge&logo=JWT&logoColor=white" alt="JWT">
+## 기술 스택
+<img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white" alt="Spring">
+<img src="https://img.shields.io/badge/Spring_Security-00796B?style=for-the-badge&logo=springsecurity&logoColor=white" alt="Spring Security">
+<img src="https://img.shields.io/badge/JWT-FFD700?style=for-the-badge&logo=JWT&logoColor=white" alt="JWT">
 
-# 인증 시스템 흐름
+---
 
-## 1. 로그인 시
+## 인증 시스템 흐름
 
-- **엑세스 토큰**: 로그인 성공 시, 엑세스 토큰을 **로컬 스토리지(localStorage)**에 저장합니다.
+### 1. 로그인 시
+- **엑세스 토큰**: 로그인 성공 시 엑세스 토큰을 **로컬 스토리지(localStorage)**에 저장합니다.
 - **리프레쉬 토큰**: 리프레쉬 토큰은 **쿠키(cookie)**에 저장합니다.
 
-## 2. 인증 흐름
+### 2. 인증 흐름
 
-### 엑세스 토큰이 있을 경우
-- 프론트엔드에서 **엑세스 토큰**이 로컬 스토리지에 존재하면, 이를 사용하여 서버에 요청을 보냅니다.
-- 서버에서 토큰을 확인하고 유효하면 요청을 처리하고, 그렇지 않으면 401 에러를 반환합니다.
+#### 엑세스 토큰이 있을 경우
+- 프론트엔드에서 **엑세스 토큰**이 로컬 스토리지에 존재하면 이를 사용하여 서버에 요청을 보냅니다.
+- 서버에서 토큰을 확인하고 유효하면 요청을 처리하며, 그렇지 않으면 401 에러를 반환합니다.
 
-### 엑세스 토큰이 없을 경우
-- 로컬 스토리지에서 엑세스 토큰이 없으면, 프론트엔드는 로그인 페이지로 **리다이렉트** 됩니다.
+#### 엑세스 토큰이 없을 경우
+- 로컬 스토리지에서 엑세스 토큰이 없으면, 프론트엔드는 로그인 페이지로 **리다이렉트**됩니다.
 - 로그인 페이지로 이동하여 재로그인 과정을 진행합니다.
 
-## 3. 엑세스 토큰 만료 처리
-
+### 3. 엑세스 토큰 만료 처리
 - 엑세스 토큰이 만료되면, 서버에서 `TokenAuthenticationFilter`를 통해 401 상태 코드를 반환합니다.
-- 프론트엔드에서는 401 에러를 받으면 **리프레쉬 토큰**을 사용하여 새 엑세스 토큰을 요청합니다.
+- 프론트엔드는 401 에러를 받으면 **리프레쉬 토큰**을 사용하여 새 엑세스 토큰을 요청합니다.
 
-### 리프레쉬 토큰 유효성 검사
+#### 리프레쉬 토큰 유효성 검사
 - 쿠키에 저장된 **리프레쉬 토큰**의 유효 날짜를 확인합니다.
 - 리프레쉬 토큰이 유효하면 **새로운 엑세스 토큰과 리프레쉬 토큰**을 반환합니다.
 - 리프레쉬 토큰이 유효하지 않으면 다시 로그인 페이지로 리다이렉트됩니다.
 
-## 4. 권한 처리
-
+### 4. 권한 처리
 - 사용자가 **권한이 없는 페이지**에 접근하면, `/access-denied` 페이지로 리다이렉트됩니다.
 
-## 5. 전체 흐름
+### 5. 전체 흐름
 
 1. **로그인**:
    - 로그인 성공 시 엑세스 토큰은 로컬 스토리지에, 리프레쉬 토큰은 쿠키에 저장됩니다.
@@ -95,31 +97,29 @@
    
 4. **권한 부족 시 처리**:
    - 권한이 없는 페이지에 접근하면, 사용자는 `/access-denied` 페이지로 이동합니다.
-   - 
-### 5. 역할에 맞는 권한 부여
+
+---
+
+## 역할에 맞는 권한 부여
 - `ROLE_USER`와 `ROLE_ADMIN` 역할에 따라 다른 콘텐츠를 보여줍니다.
-   
- ## 역할에 맞는 권한 부여 
- - ROLE USER일시에 
- 
-<img width="700" alt="image" src="https://github.com/user-attachments/assets/41abd620-428b-479c-9e04-73037cdf0699">
 
-- ROLE ADMIN일시에 
+### ROLE_USER일 시
+![ROLE_USER](https://github.com/user-attachments/assets/41abd620-428b-479c-9e04-73037cdf0699)
 
-<img width="704" alt="image" src="https://github.com/user-attachments/assets/18f73320-78dd-425e-89fa-05b3d0bc35cd">
+### ROLE_ADMIN일 시
+![ROLE_ADMIN](https://github.com/user-attachments/assets/18f73320-78dd-425e-89fa-05b3d0bc35cd)
 
+---
 
-# 인증 시스템 흐름 (OAuth2 로그인 포함)
-
+## OAuth2 로그인 흐름
 OAuth2 로그인을 통해 사용자가 Google과 같은 외부 인증 제공자(Google)를 이용해 로그인할 수 있도록 설정합니다.
 
-# OAuth2 로그인 흐름
-
+### 구글 로그인 흐름
 1. **사용자가 Google 로그인 페이지에서 로그인**  
    - 사용자가 애플리케이션에서 Google 로그인 버튼을 클릭하면, Google 로그인 페이지로 리디렉션됩니다.
 
 2. **Google에서 인증 후 리디렉션**  
-   - 사용자가 Google에서 인증을 완료하면, Google은 **인가 코드**를 애플리케이션으로 리디렉션합니다. 
+   - 사용자가 Google에서 인증을 완료하면, Google은 **인가 코드**를 애플리케이션으로 리디렉션합니다.
    - 이때 **인가 코드**는 사용자가 인증을 허가했다는 신호로, Google은 해당 코드를 애플리케이션에게 전달합니다.
 
 3. **OAuth2에서 구글 인가 코드를 받아 엑세스 토큰을 자동으로 요청**  
