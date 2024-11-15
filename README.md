@@ -35,7 +35,7 @@
 
 이 가이드는 프로젝트를 로컬 환경에서 설정하고 실행하는 방법을 안내합니다.
 
-## 1. 프로젝트 클론
+### 1. 프로젝트 클론
 
 먼저, GitHub에서 프로젝트를 클론합니다. 터미널을 열고 아래 명령어를 실행하세요:
 
@@ -43,7 +43,7 @@
 git clone https://github.com/KimSe-hyuk/loginJWT.git
 cd loginJWT
 ```
-## 2. sql 테이블 생성
+### 2. sql 테이블 생성
 java_basic db를 만들고 아래 링크와 같은 테이블 생성
 
 https://github.com/KimSe-hyuk/loginJWT/blob/main/src/main/resources/sql.sql
