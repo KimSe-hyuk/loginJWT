@@ -41,7 +41,6 @@
 
 ```bash
 git clone https://github.com/KimSe-hyuk/loginJWT.git
-cd loginJWT
 ```
 ### 2. sql 테이블 생성
 java_basic db를 만들고 아래 링크와 같은 테이블 생성
