@@ -150,7 +150,9 @@ OAuth2 로그인을 통해 사용자가 Google과 같은 외부 인증 제공자
    - 구글은 애플리케이션에게 **엑세스 토큰**을 반환합니다.
 
 4. **`principalOauth2UserService`에서 엑세스 토큰을 사용하여 Google 사용자 데이터 가져오기**  
-   - 받은 엑세스 토큰을 이용해 애플리케이션은 Google의 **사용자 정보 API** (`https://www.googleapis.com/oauth2/v3/userinfo`)를 호출하여 사용자의 정보를 가져옵니다. 
+   - 받은 엑세스 토큰을 이용해 애플리케이션은 Google의 **사용자 정보 API** (`https://www.googleapis.com/oauth2/v3/userinfo`)를 호출하여 사용자의 정보를 가져옵니다.
+
+이코드로 사용자 정보를 가져온다. ```jaba ResponseEntity<Map> response = restTemplate.exchange(userInfoUri, HttpMethod.GET, entity, Map.class);``` 
    - 이 사용자 정보를 기반으로 `OAuth2User` 객체를 생성합니다.
 
 5. **`OAuth2User` 객체를 기반으로 엑세스 토큰과 리프레시 토큰 생성**  
