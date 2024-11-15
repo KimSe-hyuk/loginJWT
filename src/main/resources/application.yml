@@ -14,8 +14,8 @@ spring:
       client:
         registration:
           google:
-            client-id: 85427185905-numk6mhttfaoqdbfifba6q68utm8i0h4.apps.googleusercontent.com
-            client-secret: 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
+            client-id: 
+            client-secret:  
             scope: profile, email
             authorization-grant-type: authorization_code
             client-name: Google
