@@ -1,5 +1,13 @@
 # loginJWT, 구글 로그인
 
+## 시작 가이드
+Installation
+```
+git colne https://github.com/KimSe-hyuk/loginJWT.git
+```
+
+ https://github.com/KimSe-hyuk/loginJWT/blob/main/src/main/resources/sql.sql
+
 ## 목차
 
 1. [주요 기능](#주요-기능)
