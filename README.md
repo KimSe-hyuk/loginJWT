@@ -5,8 +5,8 @@ Installation
 ```
 git colne https://github.com/KimSe-hyuk/loginJWT.git
 ```
-
- https://github.com/KimSe-hyuk/loginJWT/blob/main/src/main/resources/sql.sql
+db에서 아래 파일 링크에서 콘솔에 실행
+https://github.com/KimSe-hyuk/loginJWT/blob/main/src/main/resources/sql.sql
 
 ## 목차
 
