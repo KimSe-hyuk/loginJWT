@@ -1,61 +1,135 @@
 # loginJWT,구글 로그인
-토큰방식의 장점
-1.서버가 상태를 저장하지 않음 - 세션 데이터를 저장하거나 조회할 필요 없음
-2. 토큰에 사용자 정보 포함 :토큰을 검증하기만 하면 됨
-3. 보안 : 토큰 유효성 검증: 변조토큰확인가으능, 만료 시간
+## 주요 기능
+- **JWT 인증**: 구글 로그인을 통해 인증 후, JWT를 사용하여 인증을 처리합니다.
+- **역할 기반 접근 제어**: 관리자(ROLE_ADMIN)와 일반 사용자(ROLE_USER)의 접근 권한을 구분하여 제어합니다.
+- **엑세스 토큰과 리프레쉬 토큰 관리**: 클라이언트에서 JWT 토큰을 로컬 스토리지와 쿠키에 저장하여 인증을 처리합니다.
 
+## 토큰방식의 장점
+1. **서버가 상태를 저장하지 않음** - 세션 데이터를 저장하거나 조회할 필요 없음
+2. **토큰에 사용자 정보 포함** :토큰을 검증하기만 하면 됨
+3. **보안** : 토큰 유효성 검증: 변조토큰 확인가능, 만료 시간
+
+## OAuth2 로그인
+- 외부 인증 제공자(예: Google)를 사용하여 로그인하는 방식입니다.
+- 구글 로그인 시 사용자의 이메일 정보 등을 통해 JWT 토큰을 발급하고, 역할에 따라 접근 권한을 설정합니다.
+ 
+## 플로우 차트
 ![메인](https://github.com/user-attachments/assets/a87a024d-c388-4b56-9192-346e75d44d8f)
  ![User Login (1)](https://github.com/user-attachments/assets/8fee510a-bd6e-47aa-a45d-44bab7bafca6)
+ 
 
-접속시에
+## 스택
+<img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white" alt="Spring"> <img src="https://img.shields.io/badge/Spring_Security-00796B?style=for-the-badge&logo=springsecurity&logoColor=white" alt="Spring Security"> <img src="https://img.shields.io/badge/JWT-FFD700?style=for-the-badge&logo=JWT&logoColor=white" alt="JWT">
 
- public int validateToken(String token) {
-        // 1
+# 인증 시스템 흐름
 
-        // 2
+## 1. 로그인 시
 
-        // 3
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(getSecretKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            log.info("Token validated");
-            return 1;
-        }catch (ExpiredJwtException e){
-            // 토큰이 만료된 경우
-            log.info("token is expired");
-            return 2;
-        }catch (Exception e){
-            // 복호화 과정에서 에러 발생
-            log.info("token is not valid");
-            return 3;
-        }
-    }
-이것 처리
+- **엑세스 토큰**: 로그인 성공 시, 엑세스 토큰을 **로컬 스토리지(localStorage)**에 저장합니다.
+- **리프레쉬 토큰**: 리프레쉬 토큰은 **쿠키(cookie)**에 저장합니다.
 
-로그인시에 엑세스 토큰 로컬 스토리지에 저장 리프레쉬 토큰 쿠키에 저장
-프론트에서 엑세스 토큰이 있으면 접속
-엑세스 토큰 없으면 login으로 이동 
-엑세스 토큰 날짜 TokenAuthenticationFilter에서 다되면 401 리턴  프론트에서 토큰 요청 
-리프레쉬 토큰에 값이 쿠키에서 날짜가 남았으면 엑세스 토큰과 리프레쉬 토큰 리턴
+## 2. 인증 흐름
 
-다른페이지는 /access-denied 로 이동 시킨다. 
+### 엑세스 토큰이 있을 경우
+- 프론트엔드에서 **엑세스 토큰**이 로컬 스토리지에 존재하면, 이를 사용하여 서버에 요청을 보냅니다.
+- 서버에서 토큰을 확인하고 유효하면 요청을 처리하고, 그렇지 않으면 401 에러를 반환합니다.
+
+### 엑세스 토큰이 없을 경우
+- 로컬 스토리지에서 엑세스 토큰이 없으면, 프론트엔드는 로그인 페이지로 **리다이렉트** 됩니다.
+- 로그인 페이지로 이동하여 재로그인 과정을 진행합니다.
+
+## 3. 엑세스 토큰 만료 처리
+
+- 엑세스 토큰이 만료되면, 서버에서 `TokenAuthenticationFilter`를 통해 401 상태 코드를 반환합니다.
+- 프론트엔드에서는 401 에러를 받으면 **리프레쉬 토큰**을 사용하여 새 엑세스 토큰을 요청합니다.
+
+### 리프레쉬 토큰 유효성 검사
+- 쿠키에 저장된 **리프레쉬 토큰**의 유효 날짜를 확인합니다.
+- 리프레쉬 토큰이 유효하면 **새로운 엑세스 토큰과 리프레쉬 토큰**을 반환합니다.
+- 리프레쉬 토큰이 유효하지 않으면 다시 로그인 페이지로 리다이렉트됩니다.
+
+## 4. 권한 처리
+
+- 사용자가 **권한이 없는 페이지**에 접근하면, `/access-denied` 페이지로 리다이렉트됩니다.
+- `/access-denied` 페이지에서는 권한 부족 메시지 또는 안내 메시지를 보여줍니다.
+
+# 인증 시스템 흐름 (OAuth2 로그인 포함)
+
+### 구글 로그인 시에 핵심 사항
+- 구글 콘솔 리다이렉트에 http://localhost:8080/login/oauth2/code/google 추가  
+-- **OAuth2 인증을 위한 설정**을 `application.yml` 파일에 추가하는 방법
+- 각 설정 항목에 대한 간단한 설명과 사용 방법
+```yaml
+ security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 클라이언트 ID
+            client-secret: 클라이언트 보안 비밀번호
+            scope: profile, email
+            authorization-grant-type: authorization_code
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: id
+```
+## 1. 로그인 시 (OAuth2 로그인)
+
+OAuth2 로그인을 통해 사용자가 Google과 같은 외부 인증 제공자(Google)를 이용해 로그인할 수 있도록 설정합니다.
+
+```java
+.oauth2Login(oauth2 -> oauth2
+    // OAuth2 인증을 시작할 로그인 페이지 URL을 설정합니다.
+    .loginPage("/member/login")
+    
+    // Google 로그인 후 구글 유저 데이터를 받아올 userService 설정합니다.
+    .userInfoEndpoint(u -> u
+        .userService(principalOauth2UserService)
+    )
+    
+    // 로그인 성공 시 실행될 핸들러를 설정하여, email 토큰을 생성하거나 리디렉션을 처리합니다.
+    .successHandler(authenticationSuccessHandler)
+);
+```
+ ###   설명:
+- **이메일 정보**를 사용하여 엑세스 토큰과 리프레쉬 토큰을 생성하는 과정
+- **권한 기반 UI 제어**: `ROLE_USER`와 `ROLE_ADMIN` 권한에 따라 다른 콘텐츠를 보여주는 예시
+- OAuth2 로그인 후 이메일 정보를 기반으로 토큰 발급 처리
 
 
-구글 로그인시에는 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/member/login")
-                        .userInfoEndpoint(u -> u
-                                .userService(principalOauth2UserService))
-                        .successHandler(authenticationSuccessHandler)
-                );
- 로 처리해서 principalOauth2UserService에서 구글 유저 데이터를 받아오고
-successHandler에서 email 엑세스 토큰과 리프레쉬 토큰을 만든다. 
-리프레쉬시에는 Eamil정보가 있으면 email엑세스 토큰과 리프레쉬 토큰을 만든다.
 
-권한이 user일떄만 보이고 admin이면 보이지 않는다.
+## 5. 전체 흐름
+
+1. **로그인**:
+   - 로그인 성공 시 엑세스 토큰은 로컬 스토리지에, 리프레쉬 토큰은 쿠키에 저장됩니다.
+   
+2. **엑세스 토큰 유효성 검사**:
+   - 프론트엔드는 엑세스 토큰을 통해 서버에 요청을 보냅니다.
+   - 엑세스 토큰이 만료되면, 401 에러를 받아 리프레쉬 토큰으로 새로운 엑세스 토큰을 요청합니다.
+   
+3. **리프레쉬 토큰 유효성 검사**:
+   - 리프레쉬 토큰이 유효하면, 새 엑세스 토큰과 리프레쉬 토큰을 반환합니다.
+   
+4. **권한 부족 시 처리**:
+   - 권한이 없는 페이지에 접근하면, 사용자는 `/access-denied` 페이지로 이동합니다.
+   - 
+### 5. 역할에 맞는 권한 부여
+- `ROLE_USER`와 `ROLE_ADMIN` 역할에 따라 다른 콘텐츠를 보여줍니다.
+   
+ ## 역할에 맞는 권한 부여 
+ - ROLE USER일시에 
+ 
 <img width="700" alt="image" src="https://github.com/user-attachments/assets/41abd620-428b-479c-9e04-73037cdf0699">
+
+- ROLE ADMIN일시에 
+
 <img width="704" alt="image" src="https://github.com/user-attachments/assets/18f73320-78dd-425e-89fa-05b3d0bc35cd">
+
+
+
 
 
